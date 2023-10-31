@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.serializers import serialize
 from .models import Facility
 from .forms import FacilityForm
@@ -17,12 +17,12 @@ def custom_map_api(request):
   features = {
     'type': 'FeatureCollection',
     'crs': {
-      'types':'name',
+      'type': 'name',
       'properties': {
         'name': 'EPSG:4326'
       }
     },
-     'features': []
+    'features': []
   }
 
   model = Facility.objects.all()
@@ -56,3 +56,9 @@ def facility_form_add(request):
     'form': form
   }
   return render(request, 'pages/facility_add.html', context)
+
+def facility_list(request):
+  context = {
+    'data': Facility.objects.filter(operator=request.user)
+  }
+  return render(request, 'pages/facility_list.html', context)
